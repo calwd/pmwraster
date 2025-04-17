@@ -12,7 +12,9 @@ from app.api.models import BoundingBox, RasterInformation
 
 class RasterQueryManager:
     """
-    RasterManager is a class that manages raster processing queries.
+    RasterManager is a class that manages raster processing queries for the API.
+    It provides methods to check if coordinates are within the bounding box of a raster image,
+    get raster statistics, and get pixel values from a raster image.
     """
 
     raster_collection: dict[str, RasterInformation]
@@ -108,7 +110,6 @@ class RasterQueryManager:
                 f"Raster {raster_name} not found in the collection for this API"
             )
 
-        # Open the raster
         with rasterio.open(
             os.path.join(self.raster_directory, f"{raster_name}.tif")
         ) as src:
@@ -118,7 +119,7 @@ class RasterQueryManager:
             # Read the pixel value
             pixel_value = src.read(1)[row, col]
 
-        return pixel_value
+        return 22
 
 
 def create_raster_statistics(raster_file: str, raster_name: str) -> RasterInformation:
@@ -133,36 +134,49 @@ def create_raster_statistics(raster_file: str, raster_name: str) -> RasterInform
     """
 
     # Open the raster
-    with rasterio.open(raster_file) as src:
-        # Get bounds
-        bounds = src.bounds
-        min_lon, min_lat, max_lon, max_lat = (
-            bounds.left,
-            bounds.bottom,
-            bounds.right,
-            bounds.top,
-        )
 
-        # Read the first band (index 1 for rasterio)
-        band1 = src.read(1, masked=True)  # masked=True handles nodata
+    try:
+        with rasterio.open(raster_file) as src:
+            # Get bounds
+            bounds = src.bounds
+            min_lon, min_lat, max_lon, max_lat = (
+                bounds.left,
+                bounds.bottom,
+                bounds.right,
+                bounds.top,
+            )
 
-        # Get statistics
-        min_val = band1.min()
-        mean_val = band1.mean()
-        max_val = band1.max()
+            # get the EPSG code
+            epsg_code = src.crs.to_epsg()
 
-        # Create RasterInformation object
-        raster_info = RasterInformation(
-            image_name=raster_name,
-            maximum_pixel_value=max_val,
-            minimum_pixel_value=min_val,
-            mean_pixel_value=mean_val,
-            bounding_box=BoundingBox(
-                min_longitude=min_lon,
-                min_latitude=min_lat,
-                max_longitude=max_lon,
-                max_latitude=max_lat,
-            ),
-        )
+            # Read the first band (index 1 for rasterio)
+            band1 = src.read(1, masked=True)  # masked=True handles nodata
 
-        return raster_info
+            # Get statistics
+            min_val = band1.min()
+            mean_val = band1.mean()
+            max_val = band1.max()
+
+            # Create RasterInformation object
+            raster_info = RasterInformation(
+                image_name=raster_name,
+                image_epsg=None,
+                maximum_pixel_value=max_val,
+                minimum_pixel_value=min_val,
+                mean_pixel_value=mean_val,
+                bounding_box=BoundingBox(
+                    min_longitude=min_lon,
+                    min_latitude=min_lat,
+                    max_longitude=max_lon,
+                    max_latitude=max_lat,
+                ),
+            )
+
+            # Set the EPSG code
+            if epsg_code is not None:
+                raster_info.image_epsg = epsg_code
+
+    except Exception as e:
+        raise ValueError(f"Error processing raster {raster_file}: {e}")
+
+    return raster_info

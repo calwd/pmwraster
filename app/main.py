@@ -3,7 +3,7 @@ Primary entry point to the flight log service
 """
 from fastapi import FastAPI
 
-from app.api.routes.api import router as api_router
+from app.api.routes import router as api_router
 
 
 def get_application() -> FastAPI:
