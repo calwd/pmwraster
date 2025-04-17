@@ -1,9 +1,5 @@
-
-
-
 class AppConfig:
-    raster_data_folder:str
-
+    raster_data_folder: str
 
 
 def create_app_config() -> AppConfig:
@@ -13,7 +9,9 @@ def create_app_config() -> AppConfig:
         AppConfig: The application configuration.
     """
     output_config = AppConfig()
-    output_config.raster_data_folder = "/home/matthew/Documents/projects/perennial-raster/app/raster/data"
+    output_config.raster_data_folder = (
+        "/home/matthew/Documents/projects/perennial-raster/app/raster/data"
+    )
     return output_config
 
 

@@ -6,7 +6,6 @@ from fastapi import FastAPI
 from app.api.routes.api import router as api_router
 
 
-
 def get_application() -> FastAPI:
     """this function returns the fastapi application"""
     application = FastAPI(

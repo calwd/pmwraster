@@ -1,2 +1,1 @@
-
 from .raster_manager import get_raster_query_manager
