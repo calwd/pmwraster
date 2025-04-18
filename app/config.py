@@ -14,6 +14,7 @@ class AppConfig:
     Attributes:
         raster_data_folder (Path): The path to the folder containing raster data.
         logger (logging.Logger): The logger instance for the application.
+        application_name (str): The name of the application.
     """
 
     raster_data_folder: Path

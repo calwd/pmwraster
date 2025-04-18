@@ -206,5 +206,10 @@ def create_raster_statistics(raster_file: str, raster_name: str) -> RasterInform
 
 @lru_cache()
 def get_raster_query_manager() -> RasterQueryManager:
+    """
+    Get the RasterQueryManager instance. This function is structured/cached like this in order to
+    meet the requirements of the FastAPI dependency injection system
+    :return: RasterQueryManager instance
+    """
 
     return RasterQueryManager(input_config=config)

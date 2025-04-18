@@ -17,7 +17,7 @@ def query_pixel(
     manager: RasterQueryManager = Depends(get_raster_query_manager),
 ):
     """
-    Query a pixel value from a raster image using latitude and longitude coordinates.
+    API Endpoint to query a pixel value from a raster image using latitude and longitude coordinates.
     :param image_name: the name of the image to query
     :param lat: the latitude of the pixel to query
     :param lon: the longitude of the pixel to query
@@ -60,7 +60,7 @@ def get_image_stats(
     image_name: str, manager: RasterQueryManager = Depends(get_raster_query_manager)
 ):
     """
-    Get raster statistics for a given image name.
+    API Endpoint to GET raster statistics for a given image name.
     :param image_name: The name of the image to get statistics for.
     :param manager: The raster query manager instance. Uses FastAPI dependency injection pattern
     :return:
