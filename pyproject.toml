@@ -2,7 +2,7 @@
 name = "perennial-raster"
 version = "0.1.0"
 description = ""
-authors = ["Matt Wingard <matt.wingard@orbitalsidekick.com>"]
+authors = ["Matt Wingard <matt@pmwingard.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
