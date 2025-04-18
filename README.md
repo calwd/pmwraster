@@ -4,8 +4,8 @@ A sample (simple) raster API using FastAPI and Rasterio.
 
 ## Notes
 - This project currently contains two separate raster datasets that can be queried against: 
-  - Nebraska 30m Soil Organic Carbon (SOC) raster dataset (EPSG:4326): nebraska_30m_soc_4326
-  - Nebraska 30m Soil Organic Carbon (SOC) raster dataset with a different coordinate system (EPSG:3857): nebraska_30m_soc
+  - Nebraska 30m Soil Organic Carbon (SOC) raster dataset (EPSG:4326): `nebraska_30m_soc_4326`
+  - Nebraska 30m Soil Organic Carbon (SOC) raster dataset with a different coordinate system (EPSG:3857): `nebraska_30m_soc`
 This is done to demonstrate the API's ability to handle different coordinate systems and to show how the API can be extended to support multiple datasets.
   
 - The folder structure of this project strays from the typical FastAPI project structure. This is intentional to keep the project simple and focused on the raster API functionality.
@@ -13,7 +13,7 @@ This is done to demonstrate the API's ability to handle different coordinate sys
 - All pixel value queries use latitude / longitude values (assuming EPSG:4326). The API will convert the lat/lon values to the raster's coordinate system. This is done to ensure that the API can handle different raster datasets with different coordinate systems.
 - The Endpoint paths for this project vary slightly from the assignment in order to facilitate multiple raster datasets in the future.
 - Code was linted using ruff, type-checked using mypy, and formatted using isort and black
-- Given time constraints, test coverage as not written for these endpoints. However, the groundwork for those tests was created and can be seen in the conftest.py file
+- Given time constraints, test coverage as not written for these endpoints. However, the groundwork for those tests was created and can be seen in the `conftest.py` file
 
 
 ## Installation Instructions
