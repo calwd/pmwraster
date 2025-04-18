@@ -39,7 +39,7 @@ docker build -t pmwraster .
 docker run -p 8001:8001 pmwraster
 ```
 
-#### View the API docs
+#### View the API swagger documentation
 http://localhost:8001/docs
 
 #### Test the API
@@ -58,5 +58,20 @@ curl -X 'GET' \
   'http://127.0.0.1:8001/images/nebraska_30m_soc/query?lat=41.94220050&lon=-97.91683807' \
   -H 'accept: application/json'
 ```
+
+- Query the Nebraska 30m SOC dataset with coordinates outside of the raster bounds in order to receive an error:
+```
+curl -X 'GET' \
+  'http://127.0.0.1:8001/images/nebraska_30m_soc/query?lat=99.94220050&lon=-97.91683807' \
+  -H 'accept: application/json'
+```
+
+- Query the statistics of the Nebraska 30m SOC raster dataset (EPSG:4326):
+```
+curl -X 'GET' \
+  'http://127.0.0.1:8001/images/nebraska_30m_soc/stats' \
+  -H 'accept: application/json'
+```
+
 
 
