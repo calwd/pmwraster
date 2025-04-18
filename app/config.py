@@ -15,6 +15,7 @@ class AppConfig:
         raster_data_folder (Path): The path to the folder containing raster data.
         logger (logging.Logger): The logger instance for the application.
     """
+
     raster_data_folder: Path
     logger: logging.Logger
     application_name: str
@@ -43,7 +44,6 @@ def create_app_config() -> AppConfig:
     output_config.application_name = base_app_name
     output_config.logger = logging.getLogger(base_app_name)
     output_config.raster_data_folder = Path(raster_library_directory)
-
 
     return output_config
 
