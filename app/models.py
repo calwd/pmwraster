@@ -1,5 +1,6 @@
 """
-This module contains the data models (via pydantic) used in the application
+This module contains the data models (via pydantic) used in the application.
+These models are used to validate and serialize the data exchanged between the API and the client.
 """
 
 from pydantic import BaseModel

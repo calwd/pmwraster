@@ -1,13 +1,13 @@
-"""
-This module contains the raster processing querying dependencies for the application.
-"""
-import logging
 import os
+from functools import lru_cache
 from pathlib import Path
 
 import rasterio
+from pyproj import Transformer
 
-from app.api.models import BoundingBox, RasterInformation
+from app.config import AppConfig
+from app.config import app_config as config
+from app.models import BoundingBox, RasterInformation
 
 
 class RasterQueryManager:
@@ -19,32 +19,36 @@ class RasterQueryManager:
 
     raster_collection: dict[str, RasterInformation]
     raster_directory: Path
+    app_config: AppConfig
 
-    def __init__(self, raster_directory: Path, logger: logging.Logger = None):
+    def __init__(self, input_config: AppConfig):
         """
         Initialize the RasterManager with a directory pointing to the raster files.
 
         Args:
-            raster_directory (str): The path to directory containing raster files.
+            input_config (AppConfig): The config object for the application
         """
 
         self.raster_collection = {}
-        self.raster_directory = raster_directory
+        self.app_config = input_config
+        self.raster_directory = self.app_config.raster_data_folder
 
-        raster_list = os.listdir(raster_directory)
+        raster_list = os.listdir(self.raster_directory)
 
         for raster_file in raster_list:
             if raster_file.endswith(".tif"):
 
                 raster_name = raster_file.split(".")[0]
-                raster_path = os.path.join(raster_directory, raster_file)
+                raster_path = os.path.join(self.raster_directory, raster_file)
 
                 try:
                     raster_info = create_raster_statistics(raster_path, raster_name)
                     self.raster_collection[raster_name] = raster_info
                 except Exception as e:
-                    if logger is not None:
-                        logger.error(f"Error processing raster {raster_file}: {e}")
+                    if self.app_config.logger is not None:
+                        self.app_config.logger.error(
+                            f"Error processing raster {raster_file}: {e}"
+                        )
 
     def check_coordinates(
         self, raster_name: str, longitude: float, latitude: float
@@ -74,6 +78,30 @@ class RasterQueryManager:
 
         return output_bool
 
+    def convert_lat_lon_coordinates(
+        self, longitude: float, latitude: float, image_information: RasterInformation
+    ) -> tuple[float, float]:
+        """
+        Convert the given latitude and longitude to new coordinates based on the raster's EPSG code.
+        :param longitude:
+        :param latitude:
+        :param image_information: RasterInformation object containing image metadata
+        :return: tuple of new coordinates (x, y)
+        """
+
+        if image_information.image_epsg is not None:
+            if image_information.image_epsg == 4326:
+                # No conversion needed, already in EPSG:4326
+                return longitude, latitude
+
+        transformer = Transformer.from_crs(
+            "EPSG:4326", image_information.image_epsg, always_xy=True
+        )
+
+        x, y = transformer.transform(longitude, latitude)
+        # Placeholder for actual conversion logic
+        return x, y
+
     def get_raster_statistics(self, raster_name: str) -> RasterInformation:
         """
         Get raster statistics for a given raster name.
@@ -92,34 +120,28 @@ class RasterQueryManager:
         return self.raster_collection[raster_name]
 
     def get_raster_pixel_value(
-        self, raster_name: str, longitude: float, latitude: float
+        self, raster_name: str, x_coordinate: float, y_coordinate: float
     ) -> float | int:
         """
         Get the pixel value for a given raster name and coordinates.
 
         Args:
             raster_name (str): The name of the raster.
-            longitude (float): The longitude of the pixel.
-            latitude (float): The latitude of the pixel.
+            x_coordinate (float): The longitude of the pixel.
+            y_coordinate (float): The latitude of the pixel.
         Returns:
             float | int: The pixel value.
         """
-
-        if raster_name not in self.raster_collection:
-            raise ValueError(
-                f"Raster {raster_name} not found in the collection for this API"
-            )
 
         with rasterio.open(
             os.path.join(self.raster_directory, f"{raster_name}.tif")
         ) as src:
             # Convert coordinates to row/column indices
-            row, col = src.index(latitude, longitude)
+            row, col = src.index(x_coordinate, y_coordinate)
 
             # Read the pixel value
             pixel_value = src.read(1)[row, col]
-
-        return 22
+        return pixel_value
 
 
 def create_raster_statistics(raster_file: str, raster_name: str) -> RasterInformation:
@@ -180,3 +202,9 @@ def create_raster_statistics(raster_file: str, raster_name: str) -> RasterInform
         raise ValueError(f"Error processing raster {raster_file}: {e}")
 
     return raster_info
+
+
+@lru_cache()
+def get_raster_query_manager() -> RasterQueryManager:
+
+    return RasterQueryManager(input_config=config)
