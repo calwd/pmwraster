@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "perennial-raster"
+version = "0.1.0"
+description = ""
+authors = ["Matt Wingard <matt.wingard@orbitalsidekick.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+rasterio = "^1.4.3"
+pydantic = "^2.11.3"
+fastapi = "^0.115.12"
+loguru = "^0.7.3"
+pytest = "^8.3.5"
+uvicorn = "^0.34.1"
+pyproj = "^3.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
