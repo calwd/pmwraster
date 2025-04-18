@@ -9,7 +9,7 @@ A sample (simple) raster API using FastAPI and Rasterio.
 This is done to demonstrate the API's ability to handle different coordinate systems and to show how the API can be extended to support multiple datasets.
   
 - The folder structure of this project strays from the typical FastAPI project structure. This is intentional to keep the project simple and focused on the raster API functionality.
-- Even though the assignment is to create a simple API for querying a single raster, the project is structured to allow for multiple raster datasets. This is done by creating a folder for each dataset and placing the raster files inside that folder. The API can be easily extended to support more datasets by adding more folders and updating the code accordingly.
+- Even though the assignment is to create a simple API for querying a single raster, the project is structured to allow for multiple raster datasets. This is done by storing geotiff files inside of a `raster_data` folder. The API can be easily extended to support more datasets by simply by adding a geotiff file to this directory.
 - All pixel value queries use latitude / longitude values (assuming EPSG:4326). The API will convert the lat/lon values to the raster's coordinate system. This is done to ensure that the API can handle different raster datasets with different coordinate systems.
 - The Endpoint paths for this project vary slightly from the assignment in order to facilitate multiple raster datasets in the future.
 - Code was linted using ruff, type-checked using mypy, and formatted using isort and black
