@@ -28,8 +28,9 @@ RUN apt-get install libgdal-dev -y
 # Set the working directory
 WORKDIR /src
 # copy needed files to container
-COPY . .
 COPY pyproject.toml poetry.lock ./
+
+COPY . .
 
 # install python dependencies with poetry
 RUN poetry install --no-interaction --no-ansi

@@ -2,7 +2,7 @@ import os
 from functools import lru_cache
 from pathlib import Path
 
-import rasterio
+import rasterio  # type: ignore
 from pyproj import Transformer
 
 from app.config import AppConfig
