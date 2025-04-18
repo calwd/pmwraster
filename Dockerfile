@@ -41,7 +41,7 @@ EXPOSE 8001
 
 # Set the environment variable for Flask
 ENV BASE_APP_DIRECTORY=/src/app
-ENV BASE_APP_NAME=NebraskaRasterQueries
+ENV BASE_APP_NAME=PMWRaster
 
 # Run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
